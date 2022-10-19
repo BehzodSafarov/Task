@@ -33,7 +33,7 @@ public class ProductService : IProductService
             return new("Model is null");
 
             var vat = double.Parse(_configuration.GetValue("VAT",""));
-            System.Console.WriteLine(vat);
+            
             var calculate = new CalculateService();
             var price = calculate.Calculate(vat, model.Quantity, model.Price);
 
@@ -51,7 +51,7 @@ public class ProductService : IProductService
            
            
            arxive.CreatedAt = DateTime.UtcNow;
-           await _arxiveService.CreateAsync(arxive.ToArxiveModel());
+           await _arxiveService.CreateAsync(arxive);
           
            return new(true) {Data = createdProduct.ToModel()};
 
@@ -97,7 +97,7 @@ public class ProductService : IProductService
             var arxive = product.ToModel().ToArxiveEntity();
 
             arxive.RemovedAt = DateTime.UtcNow;
-            await _arxiveService.CreateAsync(arxive.ToArxiveModel());
+            await _arxiveService.CreateAsync(arxive);
 
             return new(true) {Data = removedProduct.ToModel()};
 
@@ -121,9 +121,16 @@ public class ProductService : IProductService
             var arxive = product.ToModel().ToArxiveEntity();
 
             arxive.UpdatedAt = DateTime.UtcNow;
-            await _arxiveService.CreateAsync(arxive.ToModel());
+            await _arxiveService.CreateAsync(arxive);
              
+             var vat = double.Parse(_configuration.GetValue("VAT",""));
+            
+            var calculate = new CalculateService();
+            var price = calculate.Calculate(vat, model.Quantity, model.Price);
+            
             product.Title = model.Title;
+            product.Quantity = model.Quantity;
+            product.Price = price;
 
             var updatedProduct = await _productRepository.Update(product);
                 

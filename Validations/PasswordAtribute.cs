@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace Task1.Validations
 {
     public class PasswordAttribute : ValidationAttribute
     {
+    
         public int MaxLength = 6;
 
         public PasswordAttribute(int maxLength)
@@ -11,9 +13,11 @@ namespace Task1.Validations
             MaxLength = maxLength;
         }
 
-        public override bool IsValid(object? value)
+        public override  bool IsValid(object? value)
         {
             var _value = (string?)value;
+
+           
 
             if (string.IsNullOrEmpty(_value))
             {
@@ -23,6 +27,7 @@ namespace Task1.Validations
             {
                 ErrorMessage = $"Password must be minimum length of {MaxLength}";
             }
+            
 
             return !string.IsNullOrEmpty(_value) && _value.Length >= MaxLength;
         }

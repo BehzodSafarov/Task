@@ -20,34 +20,40 @@ public class AccountController : Controller
         _signInMagaer = signInManager;
     }
     [HttpGet]
-    public IActionResult LogIn(string returnUrl) => View(new User() {ReturnUrl = returnUrl});
+    public IActionResult LogIn(string returnUrl) => View(new User() { ReturnUrl = returnUrl });
 
     [HttpPost]
     public async Task<IActionResult> LogIn(User model)
     {
-        if(!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid) return View(model);
 
         var user = await _userManager.FindByNameAsync(model.UserName);
 
-        if(user == null) return View(model);
+        if (user == null)
+        {
+            ViewBag.NotSignedId = false;
+            return View(model);
+        }
 
         var result = await _signInMagaer.PasswordSignInAsync(user, model.Password, false, false);
 
-        if(!result.Succeeded)
+        if (!result.Succeeded)
         {
+            ViewBag.NotSignedId = false;
             return View(model);
         }
 
         _logger.LogInformation($"Login succsesefull Passed");
-       
-        var role = await _signInMagaer.UserManager.GetRolesAsync(user); 
-        
-        if(role[0] == "admin")
-         return LocalRedirect($"/Product/List");
-        if(role[0] == "user")
-          return LocalRedirect($"/User/List");
-      
-       return LocalRedirect($"{model.ReturnUrl ?? "/"}");
+
+        var role = await _signInMagaer.UserManager.GetRolesAsync(user);
+
+        if (role[0] == "admin")
+            return LocalRedirect($"/Product/List");
+
+        if (role[0] == "user")
+            return LocalRedirect($"/User/List");
+
+        return LocalRedirect($"{model.ReturnUrl ?? "/"}");
     }
 
 }

@@ -20,11 +20,11 @@ public class ArxiveService : IArxiveService
     }
 
     
-    public async ValueTask<Result<Arxive>> CreateAsync(Arxive model)
+    public async ValueTask<Result<Arxive>> CreateAsync(Entities.Arxive entity)
     {
         try
         {
-            var createdArxive = await _arxiveRepository.AddAsync(model.ToEntity());
+            var createdArxive = await _arxiveRepository.AddAsync(entity);
 
             return new(true){Data = createdArxive.ToModel()};
 

@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 using Task1.Validations;
 
 namespace Task1.Models;
 
 public class User
 {
+    
     [Required]
     public string? UserName { get; set; }
 
@@ -12,5 +14,6 @@ public class User
     public string? Password  { get; set; }
 
     public string? ReturnUrl {get; set;}
-    
+
+
 }

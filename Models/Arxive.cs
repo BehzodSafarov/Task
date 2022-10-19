@@ -8,6 +8,6 @@ public class Arxive
   public DateTime RemovedAt {get;set;}
   public  int ProductId {get; set;}
   public string? ProductTitle {get; set;}
-  public ulong ProductQuontity {get; set;}
+  public int ProductQuontity {get; set;}
   public double ProductPrice { get; set; }
 }
