@@ -13,6 +13,7 @@ public class Seed
     var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger<Seed>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
+    
     var roles = config.GetSection($"Identity:IdentityServer:Roles").Get<string[]>();
 
     foreach (var role in roles)
@@ -23,7 +24,7 @@ public class Seed
 
           var result = await roleManager.CreateAsync(newRole);
 
-          if(! result.Succeeded)
+          if(!result.Succeeded)
           {
             logger.LogInformation("Seed role feiled");
           }
@@ -48,7 +49,7 @@ public class Seed
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-    var users = config.GetSection($"Identity:IdentityServer:Members").Get<Members[]>();
+    var users = config.GetSection($"Identity:IdentityServer:User").Get<User[]>();
 
     foreach (var user in users)
     {

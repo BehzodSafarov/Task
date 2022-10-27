@@ -1,59 +1,53 @@
-using Microsoft.AspNetCore.Authorization;
 using Task1.Models;
 using Task1.Repositories;
 
 namespace Task1.Services;
 
-[Authorize(Roles = "admin")]
 public class ProductService : IProductService
 {
+    private readonly IProductRepository _productRepository;
+    private readonly IHistoryService _historyService;
     private readonly IConfiguration _configuration;
     private readonly ILogger<ProductService> _logger;
-    private readonly IProductRepository _productRepository;
-    private readonly IArxiveService _arxiveService;
 
     public ProductService(
-        IConfiguration configuration,
-        ILogger<ProductService> logger,
-        IProductRepository productRepository,
-        IArxiveService arxiveService)
+    ILogger<ProductService> logger,
+    IConfiguration configuration,
+    IHistoryService historyService,
+    IProductRepository productRepository)
     {
+        _productRepository = productRepository;
+        _historyService = historyService;
         _configuration = configuration;
         _logger = logger;
-        _productRepository = productRepository;
-        _arxiveService = arxiveService;
     }
-
-
     public async ValueTask<Result<Product>> CreateAsync(Product model)
     {
         try
         {
-          if(model is null)
-            return new("Model is null");
+            if(model is null)
+              return new("Model is null");
 
             var vat = double.Parse(_configuration.GetValue("VAT",""));
             
             var calculate = new CalculateService();
             var price = calculate.Calculate(vat, model.Quantity, model.Price);
 
-           
-
             model.Price = price;
             
            var createdProduct = await _productRepository
-           .AddAsync(model.ToEntity());
+           .AddAsync(model);
 
            if(createdProduct is null)
               return new("Product not created");
            
-           var arxive = model.ToArxiveEntity();
+           var history = model.ToEntityHistory();
            
            
-           arxive.CreatedAt = DateTime.UtcNow;
-           await _arxiveService.CreateAsync(arxive);
+           history.CreatedAt = DateTime.UtcNow;
+           await _historyService.CreateAsync(history);
           
-           return new(true) {Data = createdProduct.ToModel()};
+           return new(true) {Data = createdProduct};
 
         }
         catch (System.Exception e)
@@ -68,7 +62,7 @@ public class ProductService : IProductService
         try
         {
             var products = _productRepository.GetAll()
-            .Select(x => x.ToModel())
+            .Select(x => x)
             .ToList();
 
             if(products is null)
@@ -94,12 +88,12 @@ public class ProductService : IProductService
 
             var removedProduct = await _productRepository.Remove(product);
 
-            var arxive = product.ToModel().ToArxiveEntity();
+            var history = product.ToEntityHistory();
 
-            arxive.RemovedAt = DateTime.UtcNow;
-            await _arxiveService.CreateAsync(arxive);
+            history.RemovedAt = DateTime.UtcNow;
+            await _historyService.CreateAsync(history);
 
-            return new(true) {Data = removedProduct.ToModel()};
+            return new(true) {Data = removedProduct};
 
         }
         catch (System.Exception e)
@@ -118,10 +112,10 @@ public class ProductService : IProductService
             if(product is null)
               return new("Bu Product mavjud emas");
 
-            var arxive = product.ToModel().ToArxiveEntity();
+            var history = product.ToEntityHistory();
 
-            arxive.UpdatedAt = DateTime.UtcNow;
-            await _arxiveService.CreateAsync(arxive);
+            history.UpdatedAt = DateTime.UtcNow;
+            await _historyService.CreateAsync(history);
              
              var vat = double.Parse(_configuration.GetValue("VAT",""));
             
@@ -134,14 +128,13 @@ public class ProductService : IProductService
 
             var updatedProduct = await _productRepository.Update(product);
                 
-
-           return new(true) {Data = updatedProduct.ToModel()};
+           return new(true) {Data = updatedProduct};
 
         }
-        catch (System.Exception e)
+        catch(System.Exception e )
         {
-            _logger.LogInformation($"Product not created {e.Message}");
-            throw new Exception(e.Message);
+           _logger.LogInformation($"Product not updated {model}");
+           throw new Exception(e.Message);
         }
     }
 }

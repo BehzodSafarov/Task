@@ -5,7 +5,6 @@ using Task1.Services;
 
 namespace Task1.Controllers;
 
-[Authorize(Roles = "admin")]
 public class ProductController : Controller
 {
     private readonly ILogger<ProductController> _logger;
@@ -20,6 +19,7 @@ public class ProductController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> List()
     {
       var products = await _service.GetAll();
@@ -29,6 +29,7 @@ public class ProductController : Controller
     public IActionResult AddProduct() => View();
     
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> AddProduct(Product model)
     {
          int number = 0; 
@@ -67,6 +68,7 @@ public class ProductController : Controller
      public IActionResult Update() => View();
 
      [HttpPost]
+     [Authorize(Roles ="admin")]
     public async Task<IActionResult> Update(int id, Product model)
     {
 
@@ -102,6 +104,7 @@ public class ProductController : Controller
 
        return RedirectToAction(nameof(List));
     }
+    [Authorize(Roles = "admin")]
     public IActionResult Remove(int id)
     {
         
@@ -110,4 +113,12 @@ public class ProductController : Controller
         return RedirectToAction(nameof(List));
     }
 
+    [HttpGet]
+    public async Task<IActionResult> PublicList()
+    {
+      var products = await _service.GetAll();
+        
+      return View(products.Data);
+    }
+    
 }

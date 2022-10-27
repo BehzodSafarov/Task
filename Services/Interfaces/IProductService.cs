@@ -8,4 +8,4 @@ public interface IProductService
     ValueTask<Result<Product>> Update(int id, Product model);
     ValueTask<Result<Product>> Remove(int id);
     ValueTask<Result<List<Product>>> GetAll();
- }
+}

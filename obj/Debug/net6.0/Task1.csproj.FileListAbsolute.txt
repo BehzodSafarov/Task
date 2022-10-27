@@ -124,3 +124,5 @@ D:\.Net\Task\Task1\obj\Debug\net6.0\refint\Task1.dll
 D:\.Net\Task\Task1\obj\Debug\net6.0\Task1.pdb
 D:\.Net\Task\Task1\obj\Debug\net6.0\Task1.genruntimeconfig.cache
 D:\.Net\Task\Task1\obj\Debug\net6.0\ref\Task1.dll
+D:\.Net\Task\Task1\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.InMemory.dll
+D:\.Net\Task\Task1\bin\Debug\net6.0\AutoMapper.dll

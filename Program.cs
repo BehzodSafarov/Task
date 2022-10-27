@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Task1;
-using Task1.Data;
 using Task1.Repositories;
 using Task1.Services;
 
@@ -10,8 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseSqlite(builder.Configuration
-        .GetConnectionString("DefaultConnection")));
+options.UseInMemoryDatabase("Data"));
 
 
 builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
@@ -24,9 +22,9 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>(); 
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
-builder.Services.AddTransient<IArxiveRepository, ArxiveRepository>();
+builder.Services.AddTransient<IHistoryRepository, HistoryRepository>();
 builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IArxiveService, ArxiveService>();
+builder.Services.AddTransient<IHistoryService, HistoryService>();
 
 
 var app = builder.Build();

@@ -1,0 +1,33 @@
+@model User
+
+<h1>Register Page</h1>
+
+<form method="post" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label asp-for="@Model.UserName" class="form-label">Username</label>
+    <input type="text" asp-for="@Model.UserName" class="form-control" placeholder="userName">
+    <span asp-validation-for="UserName" class="text-danger"></span>
+  </div>
+  <div>
+    @{
+      if(ViewBag.NullName is true)
+       {
+        <p class="text-danger">username can't be null </p>
+       }
+    }
+  </div>
+  <div class="mb-3">
+    <label asp-for="@Model.Password" class="form-label">Password</label>
+    <input type="password" asp-for="@Model.Password" class="form-control">
+    <span asp-validation-for="Password" class="text-danger"></span>
+  </div>
+  <div>
+    @{
+      if(ViewBag.PasswordNull is true)
+       {
+        <p class="text-danger">Password length  </p>
+       }
+    }
+  </div>
+  <button type="submit" class="btn btn-primary">Register</button>
+</form>

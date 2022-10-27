@@ -5,14 +5,14 @@ using Task1.Services;
 namespace Task1.Controllers;
 
 [Authorize(Roles = "admin")]
-public class ArxiveController : Controller
+public class HistoryController : Controller
 {
-    private readonly ILogger<ArxiveController> _logger;
-    private readonly IArxiveService _service;
+    private readonly ILogger<HistoryController> _logger;
+    private readonly IHistoryService _service;
 
-    public ArxiveController(
-      ILogger<ArxiveController> logger,
-      IArxiveService service)
+    public HistoryController(
+      ILogger<HistoryController> logger,
+      IHistoryService service)
     {
       _logger = logger;
       _service = service;  

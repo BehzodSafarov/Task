@@ -19,8 +19,9 @@ public class AccountController : Controller
         _userManager = userManager;
         _signInMagaer = signInManager;
     }
-    [HttpGet]
-    public IActionResult LogIn(string returnUrl) => View(new User() { ReturnUrl = returnUrl });
+    
+    public IActionResult LogIn(string returnUrl) => View();
+    public IActionResult Register(string returnUrl) => View();
 
     [HttpPost]
     public async Task<IActionResult> LogIn(User model)
@@ -51,9 +52,35 @@ public class AccountController : Controller
             return LocalRedirect($"/Product/List");
 
         if (role[0] == "user")
-            return LocalRedirect($"/User/List");
+            return LocalRedirect($"/Product/PublicList");
 
-        return LocalRedirect($"{model.ReturnUrl ?? "/"}");
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Register(User model)
+    {
+        
+        if(model.UserName is null)
+          {
+            ViewBag.NullName = true;
+            return View();
+          }
+          if(model.Password is null || model.Password.Count() < 6)
+          {
+           ViewBag.PasswordNull = true;
+           return View();
+          }
+        
+        var user = new IdentityUser(model.UserName);
+
+        var result = await _userManager.CreateAsync(user, model.Password);
+
+        await _userManager.AddToRoleAsync(user,"user");
+        if(!result.Succeeded) return View(model);
+
+
+        return RedirectToAction(nameof(LogIn));
     }
 
 }

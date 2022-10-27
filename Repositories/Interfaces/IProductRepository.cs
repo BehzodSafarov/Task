@@ -1,4 +1,4 @@
-using Task1.Entities;
+using Task1.Models;
 
 namespace Task1.Repositories;
 
