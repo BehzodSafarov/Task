@@ -4,7 +4,7 @@ namespace Task1.Services;
 
 public interface IHistoryService
 {
-    ValueTask<Result<History>> CreateAsync(Models.History entity);
+    ValueTask<Result<History>> CreateAsync(Models.History history);
     ValueTask<Result<History>> Remove(int id);
     ValueTask<Result<List<History>>> GetAll();
 }

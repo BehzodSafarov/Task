@@ -55,7 +55,7 @@ public class Seed
     {
        var newUser = new IdentityUser(user.UserName);
 
-       var result = await userManager.CreateAsync(newUser,user.Password);
+       var result = await userManager.CreateAsync(newUser,user.PasswordHash);
 
        if(result.Succeeded)
        {

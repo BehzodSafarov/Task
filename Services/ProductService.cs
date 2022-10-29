@@ -41,7 +41,7 @@ public class ProductService : IProductService
            if(createdProduct is null)
               return new("Product not created");
            
-           var history = model.ToEntityHistory();
+           var history = model.ToModelHistory();
            
            
            history.CreatedAt = DateTime.UtcNow;
@@ -88,7 +88,7 @@ public class ProductService : IProductService
 
             var removedProduct = await _productRepository.Remove(product);
 
-            var history = product.ToEntityHistory();
+            var history = product.ToModelHistory();
 
             history.RemovedAt = DateTime.UtcNow;
             await _historyService.CreateAsync(history);
@@ -112,7 +112,7 @@ public class ProductService : IProductService
             if(product is null)
               return new("Bu Product mavjud emas");
 
-            var history = product.ToEntityHistory();
+            var history = product.ToModelHistory();
 
             history.UpdatedAt = DateTime.UtcNow;
             await _historyService.CreateAsync(history);

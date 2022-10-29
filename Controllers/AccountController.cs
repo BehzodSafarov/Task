@@ -36,7 +36,7 @@ public class AccountController : Controller
             return View(model);
         }
 
-        var result = await _signInMagaer.PasswordSignInAsync(user, model.Password, false, false);
+        var result = await _signInMagaer.PasswordSignInAsync(user, model.PasswordHash, false, false);
 
         if (!result.Succeeded)
         {
@@ -66,7 +66,7 @@ public class AccountController : Controller
             ViewBag.NullName = true;
             return View();
           }
-          if(model.Password is null || model.Password.Count() < 6)
+          if(model.PasswordHash is null || model.PasswordHash.Count() < 6)
           {
            ViewBag.PasswordNull = true;
            return View();
@@ -74,7 +74,7 @@ public class AccountController : Controller
         
         var user = new IdentityUser(model.UserName);
 
-        var result = await _userManager.CreateAsync(user, model.Password);
+        var result = await _userManager.CreateAsync(user, model.PasswordHash);
 
         await _userManager.AddToRoleAsync(user,"user");
         if(!result.Succeeded) return View(model);

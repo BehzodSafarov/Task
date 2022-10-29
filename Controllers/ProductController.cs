@@ -8,21 +8,24 @@ namespace Task1.Controllers;
 public class ProductController : Controller
 {
     private readonly ILogger<ProductController> _logger;
-    private readonly IProductService _service;
+    private readonly IProductService _productService;
+    private readonly IHistoryService _historyService;
 
     public ProductController(
         ILogger<ProductController> logger,
-        IProductService service)
+        IProductService service,
+        IHistoryService historyService)
     {
         _logger = logger;
-        _service = service;
+        _productService = service;
+        _historyService = historyService;
     }
 
     [HttpGet]
     [Authorize(Roles = "admin")]
     public async Task<IActionResult> List()
     {
-      var products = await _service.GetAll();
+      var products = await _productService.GetAll();
         
        return View(products.Data);
     }
@@ -60,7 +63,7 @@ public class ProductController : Controller
             return View();
          }
 
-        await _service.CreateAsync(model);
+        await _productService.CreateAsync(model);
 
         return RedirectToAction(nameof(List));
     } 
@@ -100,7 +103,7 @@ public class ProductController : Controller
             return View();
          }
 
-       await _service.Update(id, model);
+       await _productService.Update(id, model);
 
        return RedirectToAction(nameof(List));
     }
@@ -108,7 +111,7 @@ public class ProductController : Controller
     public IActionResult Remove(int id)
     {
         
-        var product = _service.Remove(id);
+        var product = _productService.Remove(id);
 
         return RedirectToAction(nameof(List));
     }
@@ -116,9 +119,17 @@ public class ProductController : Controller
     [HttpGet]
     public async Task<IActionResult> PublicList()
     {
-      var products = await _service.GetAll();
+      var products = await _productService.GetAll();
         
       return View(products.Data);
+    }
+
+     [Authorize(Roles = "admin")]
+    public async Task<IActionResult> HistoryList()
+    {
+       var products = await _historyService.GetAll();
+        
+       return View(products.Data);
     }
     
 }
