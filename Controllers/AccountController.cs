@@ -28,6 +28,25 @@ public class AccountController : Controller
     {
         if (!ModelState.IsValid) return View(model);
 
+        if(model.UserName == null)
+        {
+            ViewBag.NullUserName = false;
+
+            return View();
+        }
+        if(model.PasswordHash is null)
+        {
+            ViewBag.NullPassword = false;
+            
+            return View();
+        }
+        if(model.PasswordHash.Count() <=6)
+        {
+            ViewBag.PasswordLength = false;
+            
+            return View();
+        }
+
         var user = await _userManager.FindByNameAsync(model.UserName);
 
         if (user == null)

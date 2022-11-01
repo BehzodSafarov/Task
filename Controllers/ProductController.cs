@@ -75,7 +75,7 @@ public class ProductController : Controller
     public async Task<IActionResult> Update(int id, Product model)
     {
 
-     int number = 0; 
+         int number = 0; 
          var price = model.Price.ToString();
          
           if(model.Price <= 0 )
@@ -84,7 +84,7 @@ public class ProductController : Controller
 
             return View();
          }
-         else if(model.Quantity <= 0 )
+         else if(model.Quantity <= 0)
          {
             ViewBag.QuontityNullOrMinus = false;
 
@@ -107,10 +107,10 @@ public class ProductController : Controller
 
        return RedirectToAction(nameof(List));
     }
+    
     [Authorize(Roles = "admin")]
     public IActionResult Remove(int id)
     {
-        
         var product = _productService.Remove(id);
 
         return RedirectToAction(nameof(List));

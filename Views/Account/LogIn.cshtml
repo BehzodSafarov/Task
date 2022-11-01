@@ -9,6 +9,14 @@
             <input type="text" asp-for="@Model.UserName" class="form-control" placeholder="UserName">
             <span asp-validation-for="UserName" class="text-danger"></span>
         </div>
+        <div>
+            @{
+                if(ViewBag.NullUserName == false)
+                {
+                    <p class="text-danger">Username can't be null</p>
+                }
+            }
+        </div>
         <div class="mb-3">
             <label asp-for="@Model.PasswordHash" class="form-label">Password</label>
             <input type="password" asp-for="@Model.PasswordHash" class="form-control">
@@ -17,9 +25,19 @@
         </div>
         <div>
              @{
+
+                if(ViewBag.NullPassword == false)
+                {
+                    <p class="text-danger"> password can't be null</p>
+                }
+                if(ViewBag.PasswordLength == false)
+                {
+                   <p class="text-danger"> password length must be 6 </p>  
+                }
+
                 if(ViewBag.NotSignedId == false)
                 {
-                    <p class="text-danger">username or password false </p>
+                     <p class="text-danger">Password or UserName false</p>
                 }
             }
         </div>

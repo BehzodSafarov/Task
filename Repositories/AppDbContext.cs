@@ -11,5 +11,5 @@ public class AppDbContext : IdentityDbContext
   public DbSet<History>? Arxives{get; set;}
 
   public AppDbContext(DbContextOptions<AppDbContext> options) : base(options){}
-
+  
 }

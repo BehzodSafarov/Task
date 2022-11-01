@@ -11,9 +11,10 @@ public class Product
     public string? Title { get; set; }
 
     [Required]
+    public double Price { get; set; }
+
+    [Required]
     public int Quantity { get; set; }
     
-    [Required]
-    public double Price { get; set; }
 
 }
