@@ -1,4 +1,4 @@
-@model List<History>
+@model List<Audit>
 
 <div class="container p-3">
     <div class="row pt-4">
@@ -7,35 +7,36 @@
 		</div>
 	</div>
     <br>
-    <table class="table table-bordered table-striped" style="width:100%">
+    <table class="table table-bordered table-striped" style="width:200%">
         <thead>
             <tr>
                 <th>
-                   ArxiveId
+                   UserId
                 </th>
                 <th>
-                    CreatedAt
+                    OldValue
                 </th>                               
                 <th>
-                    UpdatedAt
+                    NewValues
                 </th>
                 <th>
-                    RemovedAt
+                    AffectedColumns
                 </th>
                 
                 <th>
-                    ProductPrice
+                    TableName
                 </th>
                 <th>
-                    ProductQuontity
+                    Type
+                </th>
+    
+                <th>
+                    DateTime
                 </th>
                 <th>
-                    ProductTitle
+                    PrimaryKey
                 </th>
-                @* <th>
-                    ProductId
-                </th>
-                 *@
+                
             </tr>
         </thead>
         <tbody>
@@ -43,29 +44,30 @@
             {
                 <tr>
                     <td width="10%">
-                        @obj.Id
+                        @obj.UserId
                     </td>
                     <td width="10%">
-                        @obj.CreatedAt
+                        @obj.OldValues
                     </td>
                     <td width="10%">
-                        @obj.UpdatedAt
+                        @obj.NewValues
                     </td>
                     <td width="10%">
-                        @obj.RemovedAt
+                        @obj.AffectedColumns
                     </td>
                     <td width="10%">
-                        @obj.ProductPrice
+                        @obj.TableName
                     </td>
                     <td width="10%">
-                        @obj.ProductQuontity
+                        @obj.Type
                     </td>
                     <td width="10%">
-                        @obj.ProductTitle
+                        @obj.DateTime
                     </td>
-                    @* <td width="10%">
-                        @obj.Id
-                    </td> *@
+                    <td width="10%">
+                        @obj.PrimaryKey
+                    </td>
+                    
                 </tr>
             }
         </tbody>

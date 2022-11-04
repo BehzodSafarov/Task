@@ -1,28 +1,32 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Task1.Models;
+using Task1.Repositories;
 using Task1.Services;
 
 namespace Task1.Controllers;
 
 public class ProductController : Controller
 {
+    private readonly AppDbContext _context;
     private readonly ILogger<ProductController> _logger;
+    private readonly UserManager<IdentityUser> _userManager;
     private readonly IProductService _productService;
-    private readonly IHistoryService _historyService;
 
     public ProductController(
         ILogger<ProductController> logger,
         IProductService service,
-        IHistoryService historyService)
+        AppDbContext context,
+        UserManager<IdentityUser> userManager)
     {
+        _context = context;
         _logger = logger;
+        _userManager = userManager;
         _productService = service;
-        _historyService = historyService;
     }
 
     [HttpGet]
-    [Authorize(Roles = "admin")]
     public async Task<IActionResult> List()
     {
       var products = await _productService.GetAll();
@@ -63,9 +67,16 @@ public class ProductController : Controller
             return View();
          }
 
-        await _productService.CreateAsync(model);
+      var user1 = User.Identity!.Name;
 
-        return RedirectToAction(nameof(List));
+      var user = _userManager.Users.FirstOrDefault(x => x.UserName == user1);
+      
+
+      await _productService.CreateAsync(model, user!.Id.ToString());
+
+      
+      
+    return RedirectToAction(nameof(List));
     } 
      
      public IActionResult Update() => View();
@@ -103,7 +114,12 @@ public class ProductController : Controller
             return View();
          }
 
-       await _productService.Update(id, model);
+         var user1 = User.Identity!.Name;
+
+         var user = _userManager.Users.FirstOrDefault(x => x.UserName == user1);
+   
+
+       await _productService.Update(id, model,user!.Id.ToString());
 
        return RedirectToAction(nameof(List));
     }
@@ -111,25 +127,28 @@ public class ProductController : Controller
     [Authorize(Roles = "admin")]
     public IActionResult Remove(int id)
     {
-        var product = _productService.Remove(id);
+
+        var user1 = User.Identity!.Name;
+
+         var user = _userManager.Users.FirstOrDefault(x => x.UserName == user1);
+   
+        var product = _productService.Remove(id,user!.Id.ToString());
 
         return RedirectToAction(nameof(List));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> PublicList()
-    {
-      var products = await _productService.GetAll();
-        
-      return View(products.Data);
-    }
 
-     [Authorize(Roles = "admin")]
-    public async Task<IActionResult> HistoryList()
+    [HttpGet]
+    [Authorize(Roles = "admin")]
+    public IActionResult HistoryList()
     {
-       var products = await _historyService.GetAll();
-        
-       return View(products.Data);
+      var histories = _context.AuditLogs!.ToList();
+
+      if(histories is null)
+      return View();
+      
+      return View(histories);
     }
-    
 }
+
+    

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-options.UseInMemoryDatabase("Data"));
+options.UseSqlite("Data Source = Data.db"));
 
 
 builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
@@ -22,9 +22,9 @@ builder.Services.AddIdentity<IdentityUser,IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>(); 
 
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
-builder.Services.AddTransient<IHistoryRepository, HistoryRepository>();
+// builder.Services.AddTransient<IHistoryRepository, HistoryRepository>();
 builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IHistoryService, HistoryService>();
+// builder.Services.AddTransient<IHistoryService, HistoryService>();
 
 
 var app = builder.Build();

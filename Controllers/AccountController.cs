@@ -71,7 +71,7 @@ public class AccountController : Controller
             return LocalRedirect($"/Product/List");
 
         if (role[0] == "user")
-            return LocalRedirect($"/Product/PublicList");
+            return LocalRedirect($"/Product/List");
 
         return View();
     }

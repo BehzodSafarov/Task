@@ -6,22 +6,19 @@ namespace Task1.Services;
 public class ProductService : IProductService
 {
     private readonly IProductRepository _productRepository;
-    private readonly IHistoryService _historyService;
     private readonly IConfiguration _configuration;
     private readonly ILogger<ProductService> _logger;
 
     public ProductService(
     ILogger<ProductService> logger,
     IConfiguration configuration,
-    IHistoryService historyService,
     IProductRepository productRepository)
     {
         _productRepository = productRepository;
-        _historyService = historyService;
         _configuration = configuration;
         _logger = logger;
     }
-    public async ValueTask<Result<Product>> CreateAsync(Product model)
+    public async ValueTask<Result<Product>> CreateAsync(Product model, string userId)
     {
         try
         {
@@ -35,17 +32,10 @@ public class ProductService : IProductService
 
             model.Price = price;
             
-           var createdProduct = await _productRepository
-           .AddAsync(model);
-
+           var createdProduct = await _productRepository.AddAsync(model, userId);
+           
            if(createdProduct is null)
               return new("Product not created");
-           
-           var history = model.ToModelHistory();
-           
-           
-           history.CreatedAt = DateTime.UtcNow;
-           await _historyService.CreateAsync(history);
           
            return new(true) {Data = createdProduct};
 
@@ -77,7 +67,7 @@ public class ProductService : IProductService
         }
     }
 
-    public async ValueTask<Result<Product>> Remove(int id)
+    public async ValueTask<Result<Product>> Remove(int id,string userId)
     {
         try
         {
@@ -86,12 +76,7 @@ public class ProductService : IProductService
             if(product is null)
               return new("this product is not exist");
 
-            var removedProduct = await _productRepository.Remove(product);
-
-            var history = product.ToModelHistory();
-
-            history.RemovedAt = DateTime.UtcNow;
-            await _historyService.CreateAsync(history);
+            var removedProduct = await _productRepository.Remove(product,userId);
 
             return new(true) {Data = removedProduct};
 
@@ -103,7 +88,7 @@ public class ProductService : IProductService
         }
     }
 
-    public async ValueTask<Result<Product>> Update(int id, Product model)
+    public async ValueTask<Result<Product>> Update(int id, Product model,string userId)
     {
         try
         {
@@ -111,11 +96,6 @@ public class ProductService : IProductService
             
             if(product is null)
               return new("Bu Product mavjud emas");
-
-            var history = product.ToModelHistory();
-
-            history.UpdatedAt = DateTime.UtcNow;
-            await _historyService.CreateAsync(history);
              
              var vat = double.Parse(_configuration.GetValue("VAT",""));
             
@@ -126,7 +106,7 @@ public class ProductService : IProductService
             product.Quantity = model.Quantity;
             product.Price = price;
 
-            var updatedProduct = await _productRepository.Update(product);
+            var updatedProduct = await _productRepository.Update(product,userId);
                 
            return new(true) {Data = updatedProduct};
 

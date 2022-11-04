@@ -5,8 +5,9 @@ namespace Task1.Models;
 
 public class Product 
 {
+    [Key]
     public int Id {get; set;}
-
+                       
     [Required]
     public string? Title { get; set; }
 
@@ -15,6 +16,5 @@ public class Product
 
     [Required]
     public int Quantity { get; set; }
-    
 
 }
