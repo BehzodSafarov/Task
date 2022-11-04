@@ -32,7 +32,9 @@ public class ProductService : IProductService
 
             model.Price = price;
             
-           var createdProduct = await _productRepository.AddAsync(model, userId);
+           var createdProduct = await _productRepository.AddAsync(model);
+            _productRepository.Save(userId);
+           
            
            if(createdProduct is null)
               return new("Product not created");
@@ -76,7 +78,9 @@ public class ProductService : IProductService
             if(product is null)
               return new("this product is not exist");
 
-            var removedProduct = await _productRepository.Remove(product,userId);
+            var removedProduct = await _productRepository.Remove(product);
+
+            _productRepository.Save(userId);
 
             return new(true) {Data = removedProduct};
 
@@ -106,7 +110,9 @@ public class ProductService : IProductService
             product.Quantity = model.Quantity;
             product.Price = price;
 
-            var updatedProduct = await _productRepository.Update(product,userId);
+            var updatedProduct = await _productRepository.Update(product);
+
+            _productRepository.Save(userId);
                 
            return new(true) {Data = updatedProduct};
 

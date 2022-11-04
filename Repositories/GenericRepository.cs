@@ -11,11 +11,9 @@ public class GenericRepository<TEntity> : IGenericRrepository<TEntity> where TEn
         _context = context;
     }
 
-    public async ValueTask<TEntity> AddAsync(TEntity entity, string userId)
+    public async ValueTask<TEntity> AddAsync(TEntity entity)
     {
         var entry = await _context.Set<TEntity>().AddAsync(entity);
-
-        await _context.SaveChangesAsync(userId);
 
         return entry.Entity;
     }
@@ -23,25 +21,27 @@ public class GenericRepository<TEntity> : IGenericRrepository<TEntity> where TEn
     public IQueryable<TEntity> GetAll()
      => _context.Set<TEntity>();
 
-    public async ValueTask<TEntity> Remove(TEntity entity,string userId)
+    public async ValueTask<TEntity> Remove(TEntity entity)
     {
         var entry = _context.Set<TEntity>().Remove(entity);
 
-        await _context.SaveChangesAsync(userId);
 
         return entry.Entity;
     }
 
-    public async ValueTask<TEntity> Update(TEntity entity, string userId)
+    public async ValueTask<TEntity> Update(TEntity entity)
     {
         var entry = _context.Set<TEntity>().Update(entity);
-
-        await _context.SaveChangesAsync(userId);
 
         return entry.Entity;
     }
 
      public TEntity? GetById(int id)
        => _context.Set<TEntity>().Find(id);
+    
+    public async void Save(string userId)
+    {
+       await _context.SaveChangesAsync(userId);
+    }
 
 }
